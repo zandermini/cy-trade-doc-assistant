@@ -1,25 +1,73 @@
 {
-  "name": "@extensions/cy-trade-doc-assistant",
-  "version": "V0.01",
-  "description": "外贸单证助手 - AI 智能生成报价单、商业发票等外贸单证",
-  "main": "dist/api/index.js",
-  "scripts": {
-    "dev": "tsup --watch",
-    "build": "tsup",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@buildingai/extension-sdk": "^26.0.0",
-    "@buildingai/types": "^26.0.0",
-    "ai": "^3.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0"
-  }
+    "name": "cy-trade-doc-assistant",
+    "version": "0.0.1",
+    "description": "外贸单证助手 - AI 智能生成报价单、商业发票等外贸单证",
+    "author": "CY Developer",
+    "private": true,
+    "main": "./manifest.json",
+    "module": "./manifest.json",
+    "files": [
+        "build/**/*"
+    ],
+    "exports": {
+        ".": {
+            "import": "./manifest.json",
+            "require": "./manifest.json"
+        },
+        "./api": {
+            "types": "./build/index.d.ts",
+            "import": "./build/index.js",
+            "require": "./build/index.js"
+        },
+        "./*": "./*"
+    },
+    "scripts": {
+        "build:clean": "rimraf build .nuxt .output .temp",
+        "dev:web": "vite",
+        "dev:api": "cross-env NODE_ENV=development tsup --watch src/api",
+        "dev": "concurrently -n web,api -c cyan,magenta \"pnpm dev:web\" \"pnpm dev:api\"",
+        "build:api": "cross-env NODE_ENV=production tsup",
+        "build:web": "vite build",
+        "build:publish": "pnpm build:clean && pnpm run build:web && pnpm run build:api",
+        "format": "prettier --write src",
+        "lint": "eslint src --quiet",
+        "lint:fix": "eslint src --fix",
+        "check-types": "vue-tsc --noEmit"
+    },
+    "dependencies": {
+        "@buildingai/base": "workspace:*",
+        "@buildingai/constants": "workspace:*",
+        "@buildingai/core": "workspace:*",
+        "@buildingai/db": "workspace:*",
+        "@buildingai/decorators": "workspace:*",
+        "@buildingai/dto": "workspace:*",
+        "@buildingai/errors": "workspace:*",
+        "@buildingai/extension-sdk": "workspace:*",
+        "@buildingai/hooks": "workspace:*",
+        "@buildingai/http": "workspace:*",
+        "@buildingai/i18n": "workspace:*",
+        "@buildingai/pipe": "workspace:*",
+        "@buildingai/services": "workspace:*",
+        "@buildingai/stores": "workspace:*",
+        "@buildingai/ui": "workspace:*",
+        "@buildingai/utils": "workspace:*",
+        "@buildingai/web-core": "workspace:*",
+        "lucide-react": "catalog:web",
+        "react": "catalog:web",
+        "react-dom": "catalog:web",
+        "react-router-dom": "catalog:web",
+        "axios": "catalog:",
+        "vite-tsconfig-paths": "catalog:web"
+    },
+    "devDependencies": {
+        "@buildingai/eslint-config": "workspace:*",
+        "@buildingai/typescript-config": "workspace:*",
+        "@buildingai/web-types": "workspace:*",
+        "@types/react": "catalog:web",
+        "@types/react-dom": "catalog:web",
+        "eslint-plugin-react-refresh": "^0.4.26"
+    },
+    "engine": {
+        "buildingai": ">=26.0.0"
+    }
 }
