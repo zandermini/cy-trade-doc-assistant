@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import axios from 'axios';
+import { AiProvider, Secret } from '@buildingai/db/entities';
 
 export interface DeepseekMessage {
   role: 'system' | 'user' | 'assistant';
@@ -23,20 +26,54 @@ export interface GenerateQuotationResult {
 @Injectable()
 export class DeepseekService {
   private readonly baseUrl = 'https://api.deepseek.com';
-  private apiKey: string;
-  private model = 'deepseek-chat';
+  private readonly model = 'deepseek-chat';
 
-  setApiKey(apiKey: string): void {
-    this.apiKey = apiKey;
+  constructor(
+    @InjectRepository(AiProvider, 'default')
+    private readonly aiProviderRepository: Repository<AiProvider>,
+    @InjectRepository(Secret, 'default')
+    private readonly secretRepository: Repository<Secret>,
+  ) {}
+
+  private async getApiKey(): Promise<string | null> {
+    try {
+      const provider = await this.aiProviderRepository.findOne({
+        where: { provider: 'deepseek', isActive: true },
+      });
+
+      if (!provider || !provider.bindSecretId) {
+        return null;
+      }
+
+      const secret = await this.secretRepository.findOne({
+        where: { id: provider.bindSecretId },
+      });
+
+      if (!secret || !secret.fieldValues) {
+        return null;
+      }
+
+      const apiKeyField = secret.fieldValues.find(f => f.name === 'apiKey');
+      if (apiKeyField?.value) {
+        return apiKeyField.value;
+      }
+
+      return null;
+    } catch (error) {
+      console.error('获取 Deepseek API Key 失败:', error);
+      return null;
+    }
   }
 
-  isConfigured(): boolean {
-    return !!this.apiKey && this.apiKey.length > 0;
+  private async isConfigured(): Promise<boolean> {
+    const apiKey = await this.getApiKey();
+    return !!apiKey && apiKey.length > 0;
   }
 
   async chat(messages: DeepseekMessage[]): Promise<string> {
-    if (!this.isConfigured()) {
-      throw new Error('Deepseek API Key 未配置');
+    const apiKey = await this.getApiKey();
+    if (!apiKey) {
+      throw new Error('Deepseek API Key 未配置，请在主应用后台配置 Deepseek 供应商');
     }
 
     try {
@@ -51,7 +88,7 @@ export class DeepseekService {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.apiKey}`,
+            Authorization: `Bearer ${apiKey}`,
           },
           timeout: 60000,
         },
@@ -71,6 +108,13 @@ export class DeepseekService {
     templateType?: string;
   }): Promise<GenerateQuotationResult> {
     const { userRequirement, products, customerInfo, templateType = 'PI' } = params;
+
+    if (!(await this.isConfigured())) {
+      return {
+        success: false,
+        error: 'Deepseek API Key 未配置，请在主应用后台配置 Deepseek 供应商',
+      };
+    }
 
     const systemPrompt = `你是一个专业的外贸单证助手，负责生成报价单。请根据用户提供的信息，生成结构化的报价单数据。
 

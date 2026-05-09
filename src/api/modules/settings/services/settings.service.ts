@@ -45,9 +45,4 @@ export class SettingsService extends Repository<QuotationSettings> {
       billingPerQuery: settings.billingPerQuery,
     };
   }
-
-  async getDeepseekApiKey(): Promise<string | null> {
-    const settings = await this.getOrCreate();
-    return settings.deepseekApiKey;
-  }
 }

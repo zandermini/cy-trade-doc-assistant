@@ -6,9 +6,6 @@ export class QuotationSettings extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'deepseek_api_key', nullable: true, type: 'text' })
-  deepseekApiKey: string;
-
   @Column({ name: 'billing_per_generation', default: 10 })
   billingPerGeneration: number;
 
