@@ -1,18 +1,7 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { FileText, Package, Users, History, Settings } from 'lucide-react';
 import { Button } from '@buildingai/ui/components/ui/button';
 import { cn } from '@buildingai/ui/utils';
-import ProductListPage from './products/list';
-import ProductEditPage from './products/edit';
-import CustomerListPage from './customers/list';
-import CustomerEditPage from './customers/edit';
-import TemplateListPage from './templates/list';
-import TemplateDetailPage from './templates/[id]';
-import HistoryListPage from './history/list';
-import HistoryDetailPage from './history/[id]';
-import CompanyProfilePage from './company-profile/index';
-import ChatPage from './index';
 
 type TabType = 'chat' | 'products' | 'customers' | 'templates' | 'history' | 'profile';
 
@@ -31,25 +20,6 @@ const tabs: TabConfig[] = [
   { key: 'history', label: '历史记录', icon: <History className="size-4" />, path: '/history' },
   { key: 'profile', label: '公司信息', icon: <Settings className="size-4" />, path: '/company-profile' },
 ];
-
-function TabContent({ activeTab }: { activeTab: TabType }) {
-  switch (activeTab) {
-    case 'chat':
-      return <ChatPage />;
-    case 'products':
-      return <ProductListPage />;
-    case 'customers':
-      return <CustomerListPage />;
-    case 'templates':
-      return <TemplateListPage />;
-    case 'history':
-      return <HistoryListPage />;
-    case 'profile':
-      return <CompanyProfilePage />;
-    default:
-      return <ChatPage />;
-  }
-}
 
 export default function MainLayout() {
   const location = useLocation();
@@ -101,7 +71,7 @@ export default function MainLayout() {
       </header>
 
       <main className="flex-1 overflow-auto">
-        <TabContent activeTab={activeTab} />
+        <Outlet />
       </main>
     </div>
   );

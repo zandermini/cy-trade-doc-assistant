@@ -18,65 +18,66 @@ import ConsoleConversationsPage from './pages/console/users/conversations';
 import ConsoleTemplatesPage from './pages/console/templates/list';
 import ConsoleTemplateEditPage from './pages/console/templates/[id]';
 
-function UserLayout({ children }: { children: React.ReactNode }) {
-  return <MainLayout>{children}</MainLayout>;
-}
-
 export const routeOption = defineRouteOption({
   base: `extension/${packageJson.name}`,
   identifier: packageJson.name,
   routes: [
     {
-      index: true,
-      element: <UserLayout><ChatPage /></UserLayout>,
-    },
-    {
-      path: 'chat',
-      element: <UserLayout><ChatPage /></UserLayout>,
-    },
-    {
-      path: 'products',
-      element: <UserLayout><ProductListPage /></UserLayout>,
-    },
-    {
-      path: 'products/:id',
-      element: <UserLayout><ProductEditPage /></UserLayout>,
-    },
-    {
-      path: 'products/new',
-      element: <UserLayout><ProductEditPage /></UserLayout>,
-    },
-    {
-      path: 'customers',
-      element: <UserLayout><CustomerListPage /></UserLayout>,
-    },
-    {
-      path: 'customers/:id',
-      element: <UserLayout><CustomerEditPage /></UserLayout>,
-    },
-    {
-      path: 'customers/new',
-      element: <UserLayout><CustomerEditPage /></UserLayout>,
-    },
-    {
-      path: 'templates',
-      element: <UserLayout><TemplateListPage /></UserLayout>,
-    },
-    {
-      path: 'templates/:id',
-      element: <UserLayout><TemplateDetailPage /></UserLayout>,
-    },
-    {
-      path: 'history',
-      element: <UserLayout><HistoryListPage /></UserLayout>,
-    },
-    {
-      path: 'history/:id',
-      element: <UserLayout><HistoryDetailPage /></UserLayout>,
-    },
-    {
-      path: 'company-profile',
-      element: <UserLayout><CompanyProfilePage /></UserLayout>,
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          element: <ChatPage />,
+        },
+        {
+          path: 'chat',
+          element: <ChatPage />,
+        },
+        {
+          path: 'products',
+          element: <ProductListPage />,
+        },
+        {
+          path: 'products/:id',
+          element: <ProductEditPage />,
+        },
+        {
+          path: 'products/new',
+          element: <ProductEditPage />,
+        },
+        {
+          path: 'customers',
+          element: <CustomerListPage />,
+        },
+        {
+          path: 'customers/:id',
+          element: <CustomerEditPage />,
+        },
+        {
+          path: 'customers/new',
+          element: <CustomerEditPage />,
+        },
+        {
+          path: 'templates',
+          element: <TemplateListPage />,
+        },
+        {
+          path: 'templates/:id',
+          element: <TemplateDetailPage />,
+        },
+        {
+          path: 'history',
+          element: <HistoryListPage />,
+        },
+        {
+          path: 'history/:id',
+          element: <HistoryDetailPage />,
+        },
+        {
+          path: 'company-profile',
+          element: <CompanyProfilePage />,
+        },
+      ],
     },
   ],
   consoleMenus: [
