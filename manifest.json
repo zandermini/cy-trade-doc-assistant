@@ -1,0 +1,13 @@
+{
+  "identifier": "cy-trade-doc-assistant",
+  "name": "CY TradeDoc Assistant",
+  "type": "application",
+  "version": "V0.01",
+  "description": "外贸单证助手 - AI 智能生成报价单、商业发票等外贸单证",
+  "author": {
+    "name": "CY Developer"
+  },
+  "engine": {
+    "buildingai": ">=26.0.0"
+  }
+}
